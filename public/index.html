@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Document Verification</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f1ea;
+        padding: 20px;
+      }
+      .container {
+        max-width: 600px;
+        background-color: #fff;
+        padding: 30px;
+        margin: auto;
+        border-radius: 8px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      }
+      h2 {
+        text-align: center;
+        margin-bottom: 25px;
+      }
+      label {
+        font-weight: bold;
+        display: block;
+        margin-top: 15px;
+      }
+      input {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+      }
+      .btn {
+        width: 100%;
+        padding: 12px;
+        margin-top: 20px;
+        background-color: #003399;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+      .btn:hover {
+        background-color: #001f66;
+      }
+      .success-message {
+        display: none;
+        text-align: center;
+        color: green;
+        font-weight: bold;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Document Verification</h2>
+      <form
+        id="verificationForm"
+        action="/submit"
+        method="POST"
+        enctype="multipart/form-data"
+      >
+        <label for="name">Name (According to Govt ID)</label>
+        <input
+          type="text"
+          id="name"
+          name="name"
+          pattern="[A-Za-z ]{3,}"
+          title="Only letters and spaces, at least 3 characters"
+          required
+        />
+
+        <label for="dob">Date Of Birth</label>
+        <input type="date" id="dob" name="dob" required />
+
+        <label for="phone">Phone Number</label>
+        <input
+          type="tel"
+          id="phone"
+          name="phone"
+          placeholder="10 digits"
+          pattern="[0-9]{10}"
+          title="Enter a 10-digit phone number"
+          required
+        />
+
+        <label for="ssn">Social Security Number</label>
+        <input
+          type="text"
+          id="ssn"
+          name="ssn"
+          pattern="\d{3}-\d{2}-\d{4}"
+          placeholder="111-11-1111"
+          title="Format: 123-45-6789"
+          required
+        />
+
+        <label>Upload Your Document (Any one):</label>
+        <ul>
+          <li>National identity card / State ID</li>
+          <li>Driving License</li>
+        </ul>
+
+        <input
+          type="file"
+          id="document"
+          name="document"
+          accept="image/*,application/pdf"
+          capture="environment"
+          required
+        />
+
+        <button type="submit" class="btn">Submit Your Application</button>
+      </form>
+
+      <div class="success-message" id="successMessage">
+        Submitted Successfully!
+      </div>
+    </div>
+
+    <script>
+      document.getElementById("dob").max = new Date()
+        .toISOString()
+        .split("T")[0];
+
+      const form = document.getElementById("verificationForm");
+      const message = document.getElementById("successMessage");
+
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        message.style.color = "orange";
+        message.textContent = "Submitting...";
+        message.style.display = "block";
+
+        const formData = new FormData(form);
+
+        fetch("/submit", {
+          method: "POST",
+          body: formData,
+        })
+          .then((res) => {
+            if (res.ok) {
+              message.style.color = "green";
+              message.textContent = "Submitted Successfully!";
+              form.reset();
+              setTimeout(() => {
+                message.style.display = "none";
+              }, 3000);
+            } else {
+              alert("Failed to submit form.");
+            }
+          })
+          .catch(() => {
+            alert("Something went wrong.");
+          });
+      });
+    </script>
+  </body>
+</html>
