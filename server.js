@@ -41,10 +41,10 @@ app.post("/submit", upload.single("document"), async (req, res) => {
   const { name, dob, phone, ssn } = req.body;
 
   if (
-    !name.match(/^[A-Za-z ]{3,}$/) ||
-    !dob ||
-    !phone.match(/^\d{10}$/) ||
-    !ssn.match(/^\d{3}-\d{2}-\d{4}$/)
+    !name.match(/^[A-Za-z ]{3,}$/) || // keep name rule
+    !dob || // just check it's not empty
+    !phone.match(/^\d{10}$/) || // keep 10-digit phone
+    !ssn // just check it's not empty
   ) {
     return res.status(400).send("Invalid form data");
   }
